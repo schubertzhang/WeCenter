@@ -13,7 +13,7 @@
 			<ul>
 				<?php if ($this->user_id) { ?>
 				<li>
-					<a href="m/home/" <?php if ($_GET['act'] == 'home') { ?>class="active"<?php } ?>><i class="icon icon-list"></i><?php _e('动态'); ?> <i class="icon-tips new-action" <?php if ($this->user_info['notification_unread'] <= 0 ) { ?>style="display:none;"<?php } ?>></i> </a>
+					<a href="m/search/"<?php if ($_GET['act'] == 'search') { ?>class="active"<?php } ?>><i class="icon icon-search"></i><?php _e('搜索'); ?></a>
 				</li>
 				<?php } ?>
 
@@ -129,11 +129,11 @@
 			<div class="aw-popover more">
 				<ul>
 					<li>
-						<a href="m/search/">
+						<a href="m/home/">
 							<span class="label">
-								<i class="icon icon-search"></i>
-							</span>
-							<?php _e('搜索'); ?>
+								<i class="icon icon-list"></i>
+							</span> 
+							<?php _e('动态'); ?>
 						</a>
 					</li>
 					<li>
