@@ -21,10 +21,19 @@
         <div class="aw-publish-box">
             <!-- 问题标题 -->
             <div class="title">
-                <input type="text" class="form-control" placeholder="<?php _e('输入问题'); ?>" name="question_content" value="<?php echo $this->question_info['question_content']; ?>" />
+                <input type="text" class="form-control" placeholder="<?php _e('输入问题'); ?>" name="question_content" value="<?php echo $this->question_info['question_content']; ?>" id='input-question-title'/>
             </div>
             <!-- end 问题标题 -->
-
+			<!-- 问题列举-->
+			<div class="aw-publish-suggest-question" style="display:none;">
+				<p class="text-color-999" style="margin:6px 0px;">你的问题可能已经有答案<a href="javascript:void(0);" style="margin-left:10px;" id="get-more-search">更多...</a></p>
+				<ul class="aw-dropdown-list" style="display: block;position:initial;overflow:hidden;">
+					<li data-id="" class="question" id='question-a-speed' style="display:none;">
+						<a class="aw-hide-txt"></a>
+					</li>
+				</ul>
+			</div>
+			
             <!-- 问题补充 -->
             <div class="content">
                 <textarea name="question_detail" class="form-control autosize" placeholder="<?php _e('问题详细补充（选填）'); ?>" id="publish_detail" cols="30" rows="4"><?php echo $this->question_info['question_detail']; ?></textarea>
@@ -184,7 +193,50 @@
                 }, 'json');
             }
         }
-
+		$('#input-question-title').bind('blur', function(){
+			var obj = this;
+			getOthers(obj);
+		});
+		$('#input-question-title').bind('input', function(){
+			var obj = this;
+			getOthers(obj);
+		});
+		
+		function getOthers(obj){
+			if($(obj).val().length<1){
+				return;
+			}
+			var url = G_BASE_URL + '/search/ajax/search/?type=questions&q='+encodeURIComponent($(obj).val())+'&limit=5';				
+			$.get(url, {}, function(data){
+				var k,div,url;				
+				if(data.length > 0){
+					$('.aw-publish-suggest-question').show();
+				}else{
+					$('.aw-publish-suggest-question').hide();
+					return;
+				}
+				$('#question-a-speed').parent().find('.ajax').remove();
+				for(k in data){
+					div = $('#question-a-speed').clone();
+					div.show();
+					div.removeAttr('id');
+					div.addClass('ajax');
+					
+					url = data[k].url.replace('/?/', '/?/m/');
+					div.find('a').attr('href', url);
+					div.find('a').text(data[k].name);
+					$('#question-a-speed').parent().append(div);
+				}
+			}, 'json');		
+		}
+		
+		$('#get-more-search').bind('click', function(){
+			var value = $('#input-question-title').val();
+			if(!value){
+				return;
+			}		
+			window.location.href = G_BASE_URL+'/m/search/?q='+encodeURIComponent(value);
+		})
     });
 </script>
 
